@@ -95,7 +95,7 @@
                     <TabControl Grid.Column="0" Grid.Row="0"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <TabItem Header="Route">
                             <Grid Background="#FFE5E5E5">
-                                <TextBlock Text="{Binding RouteText}"></TextBlock>
+                                <Image Source="{Binding ElementName=listTourItems, Path=SelectedItem.Route}" />
                             </Grid>
                         </TabItem>
                         <TabItem Header="Description">

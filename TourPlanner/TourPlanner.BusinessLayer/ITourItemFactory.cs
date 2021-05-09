@@ -13,7 +13,7 @@ namespace TourPlanner.BusinessLayer
         IEnumerable<TourLog> GetLogs(string ItemName);
         IEnumerable<TourItem> GetTourInformation(string ItemName);
         IEnumerable<TourItem> Search(string itemName, bool caseSensitive = false);
-        bool AddTour(TourItem tour);
+        Task<bool> AddTourAsync(TourRequest tour);
         bool DeleteTour(TourItem currentItem);
     }
 }

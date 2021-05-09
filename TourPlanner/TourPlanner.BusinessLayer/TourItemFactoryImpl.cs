@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TourPlanner.Models;
 using TourPlanner.DAL;
+using System.Threading.Tasks;
 
 namespace TourPlanner.BusinessLayer
 {
@@ -36,9 +37,9 @@ namespace TourPlanner.BusinessLayer
             return items.Where(x => x.Name.ToLower().Contains(itemName.ToLower()));
         }
 
-        public bool AddTour(TourItem tour)
+        public async Task<bool> AddTourAsync(TourRequest tour)
         {
-            return tourItemDAO.AddTour(tour);
+            return await tourItemDAO.AddTourAsync(tour);
         }
 
         public bool DeleteTour(TourItem currentItem)

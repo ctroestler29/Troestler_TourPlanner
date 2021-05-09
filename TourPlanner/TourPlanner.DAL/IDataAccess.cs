@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using TourPlanner.Models;
 
@@ -15,5 +16,6 @@ namespace TourPlanner.DAL
 
         public bool AddTour(TourItem tour);
         public bool DeleteTour(TourItem currentItem);
+        public void CreateRouteImg(BinaryReader reader, string name);
     }
 }

@@ -74,22 +74,7 @@ namespace TourPlanner.ViewModel
 
         private void Add(object commandParameter)
         {
-            TourItem tour = new()
-            {
-                Name = TourName,
-                Route = RouteText,
-                Description = DescriptionText
-
-            };
-
-            if (tour.Name != null && !tour.Name.Contains(" "))
-            {
-                bool state = tourItemFactory.AddTour(tour);
-            }
-
-            TourName = "";
-            RouteText = "";
-            DescriptionText = "";
+            
 
         }
     }

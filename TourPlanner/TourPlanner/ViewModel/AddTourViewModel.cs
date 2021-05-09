@@ -7,10 +7,11 @@ using System.Collections;
 using TourPlanner.ViewModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TourPlanner.ViewModel
 {
-    public class AddTourViewModel: ViewModelBase
+    public class AddTourViewModel : ViewModelBase
     {
         private ITourItemFactory tourItemFactory;
 
@@ -36,36 +37,36 @@ namespace TourPlanner.ViewModel
             }
         }
 
-        private string routeText;
-        public string RouteText
+        private string start;
+        public string Start
         {
             get
             {
-                return routeText;
+                return start;
             }
             set
             {
-                if (routeText != value)
+                if (start != value)
                 {
-                    routeText = value;
-                    RaisePropertyChangedEvent(nameof(RouteText));
+                    start = value;
+                    RaisePropertyChangedEvent(nameof(Start));
                 }
             }
         }
 
-        private string descriptionText;
-        public string DescriptionText
+        private string destination;
+        public string Destination
         {
             get
             {
-                return descriptionText;
+                return destination;
             }
             set
             {
-                if (descriptionText != value)
+                if (destination != value)
                 {
-                    descriptionText = value;
-                    RaisePropertyChangedEvent(nameof(DescriptionText));
+                    destination = value;
+                    RaisePropertyChangedEvent(nameof(Destination));
                 }
             }
         }
@@ -75,22 +76,22 @@ namespace TourPlanner.ViewModel
 
         private void Add(object commandParameter)
         {
-            TourItem tour = new()
+            TourRequest tour = new()
             {
                 Name = TourName,
-                Route = RouteText,
-                Description = DescriptionText
+                Start = this.Start,
+                Destination = this.Destination
 
             };
 
-            if (tour.Name != null && !tour.Name.Contains(" "))
+            if (tour.Name != null && tour.Start != null && tour.Destination != null)
             {
-                bool state = tourItemFactory.AddTour(tour);
+                Task<bool> state = tourItemFactory.AddTourAsync(tour);
             }
 
             TourName = "";
-            RouteText = "";
-            DescriptionText = "";
+            Start = "";
+            Destination = "";
 
         }
 
