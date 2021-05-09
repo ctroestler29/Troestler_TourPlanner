@@ -6,24 +6,23 @@ using System.Threading.Tasks;
 using TourPlanner.Models;
 using Npgsql;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace TourPlanner.DAL
 {
     class Database : IDataAccess
     {
-
-        public List<TourItem> tours = new List<TourItem>()
-            {
-                new TourItem(){Name="Tour1", Route="Route information1", Description="Very Hard"},
-                new TourItem(){Name="Tour2", Route="Route information2", Description="Very Easy"}
-            };
-
+       
+        private ConfigFile configfile;
         private string connectionString;
         NpgsqlConnection connection;
         public Database()
         {
+            string path = Directory.GetCurrentDirectory();
+            string jsontxt = File.ReadAllText(path + "\\configfile.json");
+            configfile = JsonConvert.DeserializeObject<ConfigFile>(jsontxt);
             //get connectionString from config file
-            connectionString = "Server=127.0.0.1;Port=5432;Database=TourPlannerDB;User Id=postgres;Password=root;";
+            connectionString = "Server="+configfile.dbConfig.Server+ ";Port=" + configfile.dbConfig.Port + ";Database=" + configfile.dbConfig.Database + ";User Id=" + configfile.dbConfig.UserId + ";Password=" + configfile.dbConfig.Password + ";";
             connection = new NpgsqlConnection(connectionString);
         }
         public List<TourItem> GetItems()

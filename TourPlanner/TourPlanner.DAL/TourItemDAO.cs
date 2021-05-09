@@ -17,12 +17,16 @@ namespace TourPlanner.DAL
         private IDataAccess dataAccess;
         private IDataAccess dataAccess2;
         private static readonly HttpClient client = new HttpClient();
+        private ConfigFile configfile;
 
         public TourItemDAO()
         {
             //check which datasource to use (if, switch, ....)
             dataAccess = new Database();
             dataAccess2 = new FileSystem();
+            string path = Directory.GetCurrentDirectory();
+            string jsontxt = File.ReadAllText(path+"\\configfile.json");
+            configfile = JsonConvert.DeserializeObject<ConfigFile>(jsontxt);
         }
 
         public List<TourItem> GetItems()
@@ -42,7 +46,7 @@ namespace TourPlanner.DAL
 
         public async Task<bool> AddTourAsync(TourRequest tour)
         {
-            string url = "http://www.mapquestapi.com/directions/v2/route?key=E7OXb2VjmZlm3d3HeUbnmw4dDXp2Qi3n&from=" + tour.Start + "&to=" + tour.Destination + "&outFormat=json";
+            string url = "http://www.mapquestapi.com/directions/v2/route?key="+configfile.mapquestconfig.APIKey+"&from=" + tour.Start + "&to=" + tour.Destination + "&outFormat=json";
             var response = await client.GetAsync(url);
 
             var responseString = await response.Content.ReadAsStringAsync();
@@ -64,8 +68,8 @@ namespace TourPlanner.DAL
             //{
             //    imageFile.Write(bytes, 0, bytes.Length);
             //    imageFile.Flush();
-            //}
-            string filePath = "D:\\FH2021\\SWE\\Troestler_TourPlanner\\TourPlanner\\TourPlanner\\bin\\images\\"+tour.Start+"_"+tour.Destination+".jpg";
+            //} 
+            string filePath = configfile.filesystemconfig.ImagePathFolder+tour.Start+"_"+tour.Destination+".jpg";
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url2);
             request.AutomaticDecompression = DecompressionMethods.GZip;
 
@@ -91,7 +95,6 @@ namespace TourPlanner.DAL
 
         public bool DeleteTour(TourItem currentItem)
         {
-            
             return dataAccess.DeleteTour(currentItem);
         }
 

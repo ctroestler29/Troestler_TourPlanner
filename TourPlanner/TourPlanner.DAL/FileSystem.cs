@@ -14,17 +14,22 @@ namespace TourPlanner.DAL
 
         public FileSystem()
         {
-            
+
         }
 
         public void CreateRouteImg(BinaryReader reader, string filePath)
         {
-
-                Byte[] lnByte = reader.ReadBytes(1 * 1024 * 1024 * 10);
-                using (FileStream lxFS = new FileStream(filePath, FileMode.Create))
-                {
-                    lxFS.Write(lnByte, 0, lnByte.Length);
-                }
+            if (File.Exists(filePath))
+            {
+                return;
+            }
+            Byte[] bytearr = reader.ReadBytes(1 * 1024 * 1024 * 10);
+            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+            {
+                fs.Write(bytearr, 0, bytearr.Length);
+                fs.Flush();
+                fs.Close();
+            }
 
         }
 
@@ -50,7 +55,12 @@ namespace TourPlanner.DAL
 
         public bool DeleteTour(TourItem currentItem)
         {
-            throw new NotImplementedException();
+            bool state = false;
+            //if ( state = File.Exists(currentItem.Route))
+            //{
+            //    File.Delete(currentItem.Route);
+            //}
+            return state;
         }
     }
 }
