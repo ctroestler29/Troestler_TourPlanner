@@ -12,7 +12,7 @@ namespace TourPlanner.DAL
 {
     class Database : IDataAccess
     {
-       
+
         private ConfigFile configfile;
         private string connectionString;
         NpgsqlConnection connection;
@@ -22,7 +22,7 @@ namespace TourPlanner.DAL
             string jsontxt = File.ReadAllText(path + "\\configfile.json");
             configfile = JsonConvert.DeserializeObject<ConfigFile>(jsontxt);
             //get connectionString from config file
-            connectionString = "Server="+configfile.dbConfig.Server+ ";Port=" + configfile.dbConfig.Port + ";Database=" + configfile.dbConfig.Database + ";User Id=" + configfile.dbConfig.UserId + ";Password=" + configfile.dbConfig.Password + ";";
+            connectionString = "Server=" + configfile.dbConfig.Server + ";Port=" + configfile.dbConfig.Port + ";Database=" + configfile.dbConfig.Database + ";User Id=" + configfile.dbConfig.UserId + ";Password=" + configfile.dbConfig.Password + ";";
             connection = new NpgsqlConnection(connectionString);
         }
         public List<TourItem> GetItems()
@@ -64,8 +64,9 @@ namespace TourPlanner.DAL
 
             //return logsfiltered;
             connection.Open();
-            NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM tourlog WHERE tourname='"+ItemName+"';", connection);
-
+            NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM tourlog WHERE tourname=@val1;", connection);
+            command.Parameters.AddWithValue("@val1", ItemName);
+            command.Prepare();
             //Act
             NpgsqlDataReader dataReader = command.ExecuteReader();
             List<TourLog> tourslogs = new List<TourLog>();
@@ -93,8 +94,9 @@ namespace TourPlanner.DAL
             //return logsfiltered;
 
             connection.Open();
-            NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM touritem WHERE tourname ='"+ItemName+"';", connection);
-
+            NpgsqlCommand command = new NpgsqlCommand("SELECT * FROM touritem WHERE tourname =@val1;", connection);
+            command.Parameters.AddWithValue("@val1", ItemName);
+            command.Prepare();
             //Act
             NpgsqlDataReader dataReader = command.ExecuteReader();
             List<TourItem> tourss = new List<TourItem>();
@@ -121,7 +123,11 @@ namespace TourPlanner.DAL
             //return true;
 
             connection.Open();
-            NpgsqlCommand cmd2 = new NpgsqlCommand("insert into touritem (tourname, routeimgpath, description) values('" + tour.Name + "', '" + tour.Route + "', '" + tour.Description + "');", connection);
+            NpgsqlCommand cmd2 = new NpgsqlCommand("insert into touritem (tourname, routeimgpath, description) values(@val1, @val2, @val3);", connection);
+            cmd2.Parameters.AddWithValue("@val1", tour.Name);
+            cmd2.Parameters.AddWithValue("@val2", tour.Route);
+            cmd2.Parameters.AddWithValue("@val3", tour.Description);
+            cmd2.Prepare();
             cmd2.ExecuteNonQuery();
             connection.Close();
 
@@ -139,7 +145,9 @@ namespace TourPlanner.DAL
             //return state;
 
             connection.Open();
-            NpgsqlCommand cmd5 = new NpgsqlCommand("DELETE FROM touritem WHERE tourname = '" + currentItem.Name + "';", connection);
+            NpgsqlCommand cmd5 = new NpgsqlCommand("DELETE FROM touritem WHERE tourname = @val1;", connection);
+            cmd5.Parameters.AddWithValue("@val1", currentItem.Name);
+            cmd5.Prepare();
             cmd5.ExecuteNonQuery();
             connection.Close();
 
